@@ -1,7 +1,8 @@
-﻿using IronBarCode;
-using meta_menu_be.Common;
+﻿using meta_menu_be.Common;
 using meta_menu_be.Entities;
 using meta_menu_be.JsonModels;
+using QRCoder;
+using System.Drawing;
 using System.Net;
 using System.Net.Http.Headers;
 
@@ -32,11 +33,14 @@ namespace meta_menu_be.Services.TablesService
                
                 var link = $"http://localhost:8080/menu/{user.Id}/{newTable.Id}";
 
-                GeneratedBarcode qr = BarcodeWriter.CreateBarcode(link, BarcodeEncoding.QRCode);
                 var qrFileName = $"table-id-{newTable.Id}.png";
-
                 string path = Path.Combine(Environment.CurrentDirectory, @$"qr-codes\tables-qr-codes\{user.UserName}\", qrFileName);
-                qr.SaveAsPng(path);
+
+                QRCodeGenerator qrGenerator = new QRCodeGenerator();
+                QRCodeData qrCodeData = qrGenerator.CreateQrCode(link, QRCodeGenerator.ECCLevel.Q);
+                QRCode qrCode = new QRCode(qrCodeData);
+                Bitmap qrCodeImage = qrCode.GetGraphic(20);
+                qrCodeImage.Save(path);
 
                 newTable.QrCodeUrl = path;
             }
