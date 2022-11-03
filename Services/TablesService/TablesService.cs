@@ -49,6 +49,22 @@ namespace meta_menu_be.Services.TablesService
             return new ServiceResult<bool>(true);
         }
 
+        public ServiceResult<bool> Edit(int tableId, string number, string userId)
+        {
+            var table = dbContext.Tables.FirstOrDefault(x => x.Id == tableId);
+
+            if (table is null)
+            {
+                return new ServiceResult<bool>("Table Id is incorrect!");
+            }
+
+            table.Number = number;
+
+            dbContext.SaveChanges(userId);
+
+            return new ServiceResult<bool>(true);
+        }
+
         public ServiceResult<List<TableJsonModel>> GetAll(string userId)
         {
            var res = this.dbContext.Tables

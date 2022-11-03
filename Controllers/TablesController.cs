@@ -33,6 +33,18 @@ namespace meta_menu_be.Controllers
         }
 
         [Authorize]
+        [HttpPost]
+        [Route("edit")]
+        public ServiceResult<bool> Edit([FromBody] TableJsonModel model)
+        {
+            string domainName = HttpContext.Request.Host.Value;
+            string userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            var res = tablesService.Edit(model.Id, model.Number, userId);
+
+            return res;
+        }
+
+        [Authorize]
         [Route("get-all")]
         public ServiceResult<List<TableJsonModel>> GetAll()
         {
