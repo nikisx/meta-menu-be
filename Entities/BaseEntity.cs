@@ -2,7 +2,7 @@
 {
     public class BaseEntity
     {
-        public string CreatedById { get; set; }
+        public string? CreatedById { get; set; }
         public DateTime? Created { get; set; }
     }
 }

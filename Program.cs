@@ -9,6 +9,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using meta_menu_be.Services.FoodCategoryService;
 using meta_menu_be.Services.TablesService;
+using meta_menu_be.Hubs;
+using meta_menu_be.Services.OrdersService;
 
 namespace meta_menu_be
 {
@@ -58,10 +60,12 @@ namespace meta_menu_be
             builder.Services.AddSwaggerGen();
 
             builder.Services.AddCors();
+            builder.Services.AddSignalR(x => x.EnableDetailedErrors = true);
 
             builder.Services.AddTransient<IFoodCategoryService, FoodCategoryService>();
             builder.Services.AddTransient<IFoodItemService, FoodItemService>();
             builder.Services.AddTransient<ITablesService, TablesService>();
+            builder.Services.AddTransient<IOrderService, OrderService>();
 
             var app = builder.Build();
 
@@ -72,12 +76,15 @@ namespace meta_menu_be
                 app.UseSwaggerUI();
             }
 
+            app.MapHub<OrderHub>("/api/orderHub");
+
             app.UseCors(builder =>
             {
                 builder
-                .AllowAnyOrigin()
+                .WithOrigins("http://localhost:8080", "https://localhost:44349")
                 .AllowAnyMethod()
-                .AllowAnyHeader();
+                .AllowAnyHeader()
+                .AllowCredentials();
             });
 
             app.UseHttpsRedirection();

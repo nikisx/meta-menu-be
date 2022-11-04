@@ -58,6 +58,10 @@ namespace meta_menu_be.Controllers
                     authClaims.Add(new Claim(ClaimTypes.Role, userRole));
                 }
 
+                var claimIdenifier = authClaims[1];
+
+                var claimsIdenitity = new ClaimsIdentity(new[] { claimIdenifier }, "serverAuth");
+
                 var token = GetToken(authClaims);
 
 
