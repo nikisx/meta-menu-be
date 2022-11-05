@@ -40,6 +40,9 @@ namespace meta_menu_be.Services.TablesService
                 QRCodeData qrCodeData = qrGenerator.CreateQrCode(link, QRCodeGenerator.ECCLevel.Q);
                 QRCode qrCode = new QRCode(qrCodeData);
                 Bitmap qrCodeImage = qrCode.GetGraphic(20);
+
+                Directory.CreateDirectory(Path.Combine(Environment.CurrentDirectory, @$"qr-codes\tables-qr-codes\{user.UserName}"));
+
                 qrCodeImage.Save(path);
 
                 newTable.QrCodeUrl = path;
