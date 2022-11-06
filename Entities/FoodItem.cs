@@ -6,5 +6,7 @@
         public string Name { get; set; }
         public int CategoryId { get; set; }
         public virtual FoodCategory Category { get; set; }
+
+        public virtual ICollection<OrderItems> Orders { get; set; } = new HashSet<OrderItems>();
     }
 }

@@ -1,6 +1,8 @@
 ﻿using meta_menu_be.Entities;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Hosting;
+using System.Reflection.Emit;
 
 namespace meta_menu_be
 {
@@ -15,6 +17,7 @@ namespace meta_menu_be
         public DbSet<FoodCategory> FoodCategories { get; set; }
         public DbSet<Table> Tables { get; set; }
         public DbSet<Order> Orders { get; set; }
+        public DbSet<OrderItems> OrdersItems { get; set; }
 
         public int SaveChanges(string? userId)
         {

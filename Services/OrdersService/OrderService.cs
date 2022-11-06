@@ -1,6 +1,7 @@
 ﻿using meta_menu_be.Common;
 using meta_menu_be.Entities;
 using meta_menu_be.JsonModels;
+using Microsoft.EntityFrameworkCore;
 
 namespace meta_menu_be.Services.OrdersService
 {
@@ -11,30 +12,55 @@ namespace meta_menu_be.Services.OrdersService
         {
             this.dbContext = dbContext;
         }
-        public ServiceResult<Order> Create(int tableId, string userId)
+        public ServiceResult<OrderJsonModel> Create(OrderJsonModel model)
         {
-            var table = dbContext.Tables.FirstOrDefault(x => x.Id == tableId);
+            var table = dbContext.Tables.FirstOrDefault(x => x.Id == model.TableId);
 
             if (table == null)
             {
-                return new ServiceResult<Order>("Ïncorrect table Id!");
+                return new ServiceResult<OrderJsonModel>("Ïncorrect table Id!");
             }
 
             var order = new Order()
             {
-                UserId = userId,
+                UserId = model.UserId,
                 TableNumber = table.Number,
             };
 
             dbContext.Orders.Add(order);
             dbContext.SaveChanges();
 
-            return new ServiceResult<Order>(order);
+
+            foreach (var item in model.Items)
+            {
+                var orderItems = new OrderItems
+                {
+                    ItemId = item.Id,
+                    OrderId = order.Id,
+                    Quantity = item.Quantity,
+                };
+
+                dbContext.OrdersItems.Add(orderItems);
+            }
+
+            dbContext.SaveChanges();
+
+            var res = new OrderJsonModel
+            {
+                Id = order.Id,
+                UserId = order.UserId,
+                TableNumber = order.TableNumber,
+                Items = model.Items,
+            };
+
+            return new ServiceResult<OrderJsonModel>(res);
         }
 
         public ServiceResult<List<OrderJsonModel>> GetAllForUser(string userId)
         {
             var res = dbContext.Orders
+                .Include(x => x.Items)
+                .ThenInclude(x => x.Item)
                 .Where(x => x.UserId == userId)
                 .OrderByDescending(x => x.Created)
                 .Select(x => new OrderJsonModel
@@ -42,7 +68,13 @@ namespace meta_menu_be.Services.OrdersService
                     Id = x.Id,
                     UserId = x.UserId,
                     TableNumber = x.TableNumber,
-                }).ToList();
+                    Items = x.Items.Select(i => new FoodItemJsonModel
+                    {
+                        Id = i.Id,
+                        Name = i.Item.Name,
+                        Quantity = i.Quantity,
+                    }).ToList()
+                }).Reverse().ToList();
 
             return new ServiceResult<List<OrderJsonModel>>(res);
         }

@@ -26,9 +26,9 @@ namespace meta_menu_be.Controllers
 
         [HttpPost]
         [Route("create")]
-        public ServiceResult<Order> Create([FromBody] OrderJsonModel model)
+        public ServiceResult<OrderJsonModel> Create([FromBody] OrderJsonModel model)
         {
-            var res = orderService.Create(model.TableId, model.UserId);
+            var res = orderService.Create(model);
 
             if (res.Data != null)
             {
