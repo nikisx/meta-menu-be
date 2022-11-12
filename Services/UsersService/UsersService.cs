@@ -18,6 +18,7 @@ namespace meta_menu_be.Services.UsersService
                 Id = x.Id,
                 Username = x.UserName,
                 Email = x.Email,
+                AccountType = (int)x.AccountType,
             }).ToList();
 
             return new ServiceResult<List<UserJsonModel>>(users);

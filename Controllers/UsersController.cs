@@ -1,6 +1,7 @@
 ﻿using meta_menu_be.Common;
 using meta_menu_be.JsonModels;
 using meta_menu_be.Services.TablesService;
+using meta_menu_be.Services.UsersService;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -18,7 +19,7 @@ namespace meta_menu_be.Controllers
             this.usersService = usersService;
         }
 
-        [Authorize("Adminj")]
+        [Authorize(Roles = "Admin")]
         [Route("get-all")]
         public ServiceResult<List<UserJsonModel>> GetAll()
         {

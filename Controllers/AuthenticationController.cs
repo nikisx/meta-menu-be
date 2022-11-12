@@ -171,6 +171,7 @@ namespace meta_menu_be.Controllers
                     QrUrl = x.QrCodeUrl,
 
                 }).ToList(),
+                AccountType = (int)applicationUser.AccountType,
             };
         }
 
