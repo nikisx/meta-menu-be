@@ -11,6 +11,8 @@ using meta_menu_be.Services.FoodCategoryService;
 using meta_menu_be.Services.TablesService;
 using meta_menu_be.Hubs;
 using meta_menu_be.Services.OrdersService;
+using meta_menu_be.Modules;
+using meta_menu_be.Services.UsersService;
 
 namespace meta_menu_be
 {
@@ -66,6 +68,7 @@ namespace meta_menu_be
             builder.Services.AddTransient<IFoodItemService, FoodItemService>();
             builder.Services.AddTransient<ITablesService, TablesService>();
             builder.Services.AddTransient<IOrderService, OrderService>();
+            builder.Services.AddTransient<IUsersService, UsersService>();
 
             var app = builder.Build();
 
@@ -86,6 +89,8 @@ namespace meta_menu_be
                 .AllowAnyHeader()
                 .AllowCredentials();
             });
+
+            SeedData.Initialize(app);
 
             app.UseHttpsRedirection();
 

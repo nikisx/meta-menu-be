@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
@@ -41,7 +42,12 @@ namespace meta_menu_be.Controllers
         [Route("login")]
         public async Task<IActionResult> Login([FromBody] LoginModel model)
         {
-            var user = await userManager.FindByEmailAsync(model.Email);
+            var user = this.dbContext.Users
+                .Include(x => x.Categories)
+                .ThenInclude(x => x.Items)
+                .Include(x => x.Tables)
+                .FirstOrDefault(x => x.Email == model.Email);
+
             if (user != null && await userManager.CheckPasswordAsync(user, model.Password))
             {
                 var userRoles = await userManager.GetRolesAsync(user);
@@ -58,17 +64,13 @@ namespace meta_menu_be.Controllers
                     authClaims.Add(new Claim(ClaimTypes.Role, userRole));
                 }
 
-                var claimIdenifier = authClaims[1];
-
-                var claimsIdenitity = new ClaimsIdentity(new[] { claimIdenifier }, "serverAuth");
-
                 var token = GetToken(authClaims);
 
 
                 return Ok(new
                 {
                     Token = new JwtSecurityTokenHandler().WriteToken(token),
-                    Data = user,
+                    Data = MapUser(user, userRoles),
                     Success = true,
                 });
             }
@@ -124,9 +126,52 @@ namespace meta_menu_be.Controllers
         public async Task<IActionResult> GetCurrentUser()
         {
             string userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            ApplicationUser applicationUser = await userManager.FindByIdAsync(userId);
 
-            return Ok(applicationUser);
+            ApplicationUser applicationUser = this.dbContext.Users
+                .Include(x => x.Categories)
+                .ThenInclude(x => x.Items)
+                .Include(x => x.Tables)
+                .FirstOrDefault(x => x.Id == userId);
+
+            if (applicationUser == null)
+            {
+                return NoContent();
+            }
+
+            var roles = await userManager.GetRolesAsync(applicationUser);
+
+            UserJsonModel user = MapUser(applicationUser, roles);
+
+            return Ok(user);
+        }
+
+        private static UserJsonModel MapUser(ApplicationUser applicationUser, IList<string> roles)
+        {
+            return new UserJsonModel
+            {
+                Id = applicationUser.Id,
+                Username = applicationUser.UserName,
+                Email = applicationUser.Email,
+                Roles = roles,
+                Categories = applicationUser.Categories.Select(x => new FoodCategoryJsonModel
+                {
+                    Name = x.Name,
+                    Id = x.Id,
+                    Items = x.Items.Select(i => new FoodItemJsonModel
+                    {
+                        Id = i.Id,
+                        Name = i.Name,
+                        CategoryId = i.CategoryId,
+                    }).ToList(),
+                }).ToList(),
+                Tables = applicationUser.Tables.Select(x => new TableJsonModel
+                {
+                    Id = x.Id,
+                    Number = x.Number,
+                    QrUrl = x.QrCodeUrl,
+
+                }).ToList(),
+            };
         }
 
         private JwtSecurityToken GetToken(List<Claim> authClaims)

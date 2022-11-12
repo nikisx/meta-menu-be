@@ -74,7 +74,9 @@ namespace meta_menu_be.Services.OrdersService
                         Name = i.Item.Name,
                         Quantity = i.Quantity,
                     }).ToList()
-                }).Reverse().ToList();
+                }).ToList();
+
+           
 
             return new ServiceResult<List<OrderJsonModel>>(res);
         }
