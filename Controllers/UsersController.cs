@@ -10,8 +10,9 @@ using System.Security.Claims;
 namespace meta_menu_be.Controllers
 {
     [Route("api/[controller]")]
+    [Authorize(Roles = "Admin")]
     [ApiController]
-    public class UsersController : ControllerBase
+    public class UsersController : ControllerBaseExtended
     {
         private readonly IUsersService usersService;
         public UsersController(IUsersService usersService)
@@ -19,11 +20,28 @@ namespace meta_menu_be.Controllers
             this.usersService = usersService;
         }
 
-        [Authorize(Roles = "Admin")]
         [Route("get-all")]
         public ServiceResult<List<UserJsonModel>> GetAll()
         {
             var res = usersService.GetAll();
+
+            return res;
+        }
+
+        [AllowAnonymous]
+        [Route("get-user-info")]
+        public ServiceResult<UserJsonModel> GetUserInfo(string id)
+        {
+            var res = usersService.GetUserInfo(id);
+
+            return res;
+        }
+
+        [Route("update-type")]
+        [HttpPost]
+        public ServiceResult<int> UpdateUserType(UserJsonModel model)
+        {
+            var res = usersService.UpdateUserAccountType(model.Id, model.AccountType, this.GetLoggednInUserId());
 
             return res;
         }
