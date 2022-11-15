@@ -10,7 +10,7 @@ namespace meta_menu_be.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class FoodCategoryController : ControllerBase
+    public class FoodCategoryController : ControllerBaseExtended
     {
         private IFoodCategoryService foodCategoryService;
         public FoodCategoryController(IFoodCategoryService foodCategoryService)
@@ -23,7 +23,7 @@ namespace meta_menu_be.Controllers
         [Route("create")]
         public ServiceResult<bool> Create(FoodCategoryJsonModel model)
         {
-            string userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            string userId = model.UserId is not null ? model.UserId : this.GetLoggednInUserId();
             var res = foodCategoryService.Create(model, userId);
 
             return res;
@@ -32,7 +32,7 @@ namespace meta_menu_be.Controllers
         [Route("get-all")]
         public ServiceResult<List<FoodCategoryJsonModel>> GetAll(string? userId)
         {
-            string id = string.IsNullOrEmpty(userId) ?  User.FindFirst(ClaimTypes.NameIdentifier)?.Value : userId;
+            string id = string.IsNullOrEmpty(userId) ? this.GetLoggednInUserId() : userId;
             var res = foodCategoryService.GetAll(id);
 
             return res;
