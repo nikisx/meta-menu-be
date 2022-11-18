@@ -8,5 +8,6 @@ namespace meta_menu_be.Services.UsersService
         ServiceResult<List<UserJsonModel>> GetAll();
         ServiceResult<UserJsonModel> GetUserInfo(string id);
         ServiceResult<int> UpdateUserAccountType(string userId, int accountType, string loggedInUserId);
+        ServiceResult<bool> DeleteAllOrders();
     }
 }

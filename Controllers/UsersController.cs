@@ -45,5 +45,14 @@ namespace meta_menu_be.Controllers
 
             return res;
         }
+
+        [Route("delete-orders")]
+        [HttpPost]
+        public ServiceResult<bool> DeleteAllOrders()
+        {
+            var res = usersService.DeleteAllOrders();
+
+            return res;
+        }
     }
 }

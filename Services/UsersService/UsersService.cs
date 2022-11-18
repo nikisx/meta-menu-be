@@ -88,5 +88,18 @@ namespace meta_menu_be.Services.UsersService
                 AccountType = (int)applicationUser.AccountType,
             };
         }
+
+        public ServiceResult<bool> DeleteAllOrders()
+        {
+            var orderItems = this.dbContext.OrdersItems.ToList();
+            var orders = this.dbContext.Orders.ToList();
+
+            dbContext.OrdersItems.RemoveRange(orderItems);
+            dbContext.Orders.RemoveRange(orders);
+
+            dbContext.SaveChanges();
+
+            return new ServiceResult<bool>(true);
+        }
     }
 }

@@ -19,7 +19,7 @@ namespace meta_menu_be
         public DbSet<Order> Orders { get; set; }
         public DbSet<OrderItems> OrdersItems { get; set; }
 
-        public int SaveChanges(string? userId)
+        public int SaveChanges(string userId)
         {
             var entities = ChangeTracker.Entries().Where(x => x.Entity is BaseEntity && (x.State == EntityState.Added));
 
@@ -33,9 +33,20 @@ namespace meta_menu_be
 
             }
 
-            return SaveChanges();
+            return base.SaveChanges();
         }
 
+        public override int SaveChanges()
+        {
+            var entities = ChangeTracker.Entries().Where(x => x.Entity is BaseEntity && (x.State == EntityState.Added));
+
+            foreach (var entity in entities)
+            {
+                ((BaseEntity)entity.Entity).Created = System.DateTime.Now;
+            }
+
+            return base.SaveChanges();
+        }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
