@@ -10,7 +10,6 @@ using System.Security.Claims;
 namespace meta_menu_be.Controllers
 {
     [Route("api/[controller]")]
-    [Authorize(Roles = "Admin")]
     [ApiController]
     public class UsersController : ControllerBaseExtended
     {
@@ -21,6 +20,7 @@ namespace meta_menu_be.Controllers
         }
 
         [Route("get-all")]
+        [Authorize(Roles = "Admin")]
         public ServiceResult<List<UserJsonModel>> GetAll()
         {
             var res = usersService.GetAll();
@@ -39,6 +39,7 @@ namespace meta_menu_be.Controllers
 
         [Route("update-type")]
         [HttpPost]
+        [Authorize(Roles = "Admin")]
         public ServiceResult<int> UpdateUserType(UserJsonModel model)
         {
             var res = usersService.UpdateUserAccountType(model.Id, model.AccountType, this.GetLoggednInUserId());
@@ -48,9 +49,21 @@ namespace meta_menu_be.Controllers
 
         [Route("delete-orders")]
         [HttpPost]
+        [Authorize(Roles = "Admin")]
         public ServiceResult<bool> DeleteAllOrders()
         {
             var res = usersService.DeleteAllOrders();
+
+            return res;
+        }
+
+        [Route("get-statistics")]
+        [Authorize]
+        public ServiceResult<StatisticsJsonModel> GetStatistics()
+        {
+            var userId = GetLoggednInUserId();
+
+            var res = usersService.GetStatistics(userId);
 
             return res;
         }

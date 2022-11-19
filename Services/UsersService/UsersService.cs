@@ -101,5 +101,37 @@ namespace meta_menu_be.Services.UsersService
 
             return new ServiceResult<bool>(true);
         }
+
+        public ServiceResult<StatisticsJsonModel> GetStatistics(string userId)
+        {
+            var user = this.dbContext.Users
+                .Include(x => x.Orders)
+                .FirstOrDefault(x => x.Id == userId);
+
+            if (user == null)
+            {
+                return new ServiceResult<StatisticsJsonModel>("Invalid User Id!");
+            }
+
+            var userOrders = user.Orders;
+
+            double morgingCount = userOrders.Count(x => x.Created.Value.Hour < 11);
+            double lunchCount = userOrders.Count(x => x.Created.Value.Hour >= 11 && x.Created.Value.Hour < 15);
+            double afternoonCount = userOrders.Count(x => x.Created.Value.Hour >= 15 && x.Created.Value.Hour < 18);
+            double eveningCount = userOrders.Count(x => x.Created.Value.Hour >= 18);
+
+            double moringPercent = (morgingCount / userOrders.Count) * 100;
+            double lunchPercent = (lunchCount / userOrders.Count) * 100;
+            double afternoonPercent = (afternoonCount / userOrders.Count) * 100;
+            double eveningPercent = (eveningCount / userOrders.Count) * 100;
+
+            return new ServiceResult<StatisticsJsonModel>(new StatisticsJsonModel
+            {
+                Morning = moringPercent,
+                Lunch = lunchPercent,
+                Afternoon = afternoonPercent,
+                Evening = eveningPercent,
+            });
+        }
     }
 }
