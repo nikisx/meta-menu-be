@@ -131,6 +131,8 @@ namespace meta_menu_be.Services.UsersService
                 Lunch = lunchPercent,
                 Afternoon = afternoonPercent,
                 Evening = eveningPercent,
+                LastMonthOrdersCount = user.LastMonthOrdersCount,
+                CurrentMonthOrdersCount = userOrders.Count,
             });
         }
     }

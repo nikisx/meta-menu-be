@@ -6,5 +6,7 @@
         public double Lunch { get; set; }
         public double Afternoon { get; set; }
         public double Evening { get; set; }
+        public int LastMonthOrdersCount { get; set; }
+        public int CurrentMonthOrdersCount { get; set; }
     }
 }
