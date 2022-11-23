@@ -94,6 +94,13 @@ namespace meta_menu_be.Services.UsersService
             var orderItems = this.dbContext.OrdersItems.ToList();
             var orders = this.dbContext.Orders.ToList();
 
+            var users = dbContext.Users.Include(x => x.Orders);
+
+            foreach (var user in users)
+            {
+                user.LastMonthOrdersCount = user.Orders.Count;
+            }
+
             dbContext.OrdersItems.RemoveRange(orderItems);
             dbContext.Orders.RemoveRange(orders);
 
@@ -116,8 +123,8 @@ namespace meta_menu_be.Services.UsersService
             var userOrders = user.Orders;
 
             double morgingCount = userOrders.Count(x => x.Created.Value.Hour < 11);
-            double lunchCount = userOrders.Count(x => x.Created.Value.Hour >= 11 && x.Created.Value.Hour < 15);
-            double afternoonCount = userOrders.Count(x => x.Created.Value.Hour >= 15 && x.Created.Value.Hour < 18);
+            double lunchCount = userOrders.Count(x => x.Created.Value.Hour >= 11 && x.Created.Value.Hour < 14);
+            double afternoonCount = userOrders.Count(x => x.Created.Value.Hour >= 14 && x.Created.Value.Hour < 18);
             double eveningCount = userOrders.Count(x => x.Created.Value.Hour >= 18);
 
             double moringPercent = (morgingCount / userOrders.Count) * 100;
