@@ -26,12 +26,21 @@ namespace meta_menu_be.Services.FoodCategoryService
             return new ServiceResult<bool>(true);
         }
 
+        public ServiceResult<bool> Edit(FoodCategoryJsonModel model, string userId)
+        {
+            var category = dbContext.FoodCategories.FirstOrDefault(c => c.Id == model.Id);
+            category.Name = model.Name;
+
+            dbContext.SaveChanges(userId);
+
+            return new ServiceResult<bool>(true);
+        }
+
         public ServiceResult<List<FoodCategoryJsonModel>> GetAll(string userId)
         {
             var res = dbContext.FoodCategories
                 .Include(x => x.Items)
                 .Where(x => x.UserId == userId)
-                .OrderByDescending(x => x.Created)
                 .Select(x => new FoodCategoryJsonModel
                 {
                     Id = x.Id,
@@ -41,10 +50,21 @@ namespace meta_menu_be.Services.FoodCategoryService
                         Id = i.Id,
                         CategoryId = i.CategoryId,
                         Name = i.Name,
-                    })
+                    }),
+                    IsHidden = x.IsHidden,
                 }).ToList();
 
             return new ServiceResult<List<FoodCategoryJsonModel>>(res);
+        }
+
+        public ServiceResult<bool> HideCategory(FoodCategoryJsonModel model, string userId)
+        {
+            var category = dbContext.FoodCategories.FirstOrDefault(c => c.Id == model.Id);
+            category.IsHidden = model.IsHidden;
+
+            dbContext.SaveChanges(userId);
+
+            return new ServiceResult<bool>(true);
         }
     }
 }

@@ -29,6 +29,28 @@ namespace meta_menu_be.Controllers
             return res;
         }
 
+        [Authorize]
+        [HttpPost]
+        [Route("edit")]
+        public ServiceResult<bool> Edit(FoodCategoryJsonModel model)
+        {
+            string userId = model.UserId is not null ? model.UserId : this.GetLoggednInUserId();
+            var res = foodCategoryService.Edit(model, userId);
+
+            return res;
+        }
+
+        [Authorize]
+        [HttpPost]
+        [Route("edit-hide")]
+        public ServiceResult<bool> EditHide(FoodCategoryJsonModel model)
+        {
+            string userId = model.UserId is not null ? model.UserId : this.GetLoggednInUserId();
+            var res = foodCategoryService.HideCategory(model, userId);
+
+            return res;
+        }
+
         [Route("get-all")]
         public ServiceResult<List<FoodCategoryJsonModel>> GetAll(string? userId)
         {

@@ -77,6 +77,7 @@ namespace meta_menu_be.Services.UsersService
                         Name = i.Name,
                         CategoryId = i.CategoryId,
                     }).ToList(),
+                    IsHidden = x.IsHidden,
                 }).ToList(),
                 Tables = applicationUser.Tables.Select(x => new TableJsonModel
                 {
