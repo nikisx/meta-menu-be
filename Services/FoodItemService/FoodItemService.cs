@@ -14,10 +14,17 @@ namespace meta_menu_be.Services.FoodCategoryService
         }
         public ServiceResult<bool> Create(FoodItemJsonModel model, string userId)
         {
+            MemoryStream memoryStream = new MemoryStream();
+            model.Image?.CopyTo(memoryStream);
+
             var foodItem = new FoodItem()
             {
                 Name = model.Name,
                 CategoryId = model.CategoryId,
+                Image = memoryStream.ToArray(),
+                Description = model.Description,
+                Allergens = model.Allergens,
+                Price = model.Price,
             };
 
             dbContext.FoodItems.Add(foodItem);

@@ -21,7 +21,7 @@ namespace meta_menu_be.Controllers
         [Authorize]
         [HttpPost]
         [Route("create")]
-        public ServiceResult<bool> Create(FoodItemJsonModel model)
+        public ServiceResult<bool> Create([FromForm] FoodItemJsonModel model)
         {
             string userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             var res = foodItemService.Create(model, userId);

@@ -76,6 +76,7 @@ namespace meta_menu_be.Services.UsersService
                         Id = i.Id,
                         Name = i.Name,
                         CategoryId = i.CategoryId,
+                        ImageBytes = i.Image?.Length > 0 ? Convert.ToBase64String(i.Image) : null,
                     }).ToList(),
                     IsHidden = x.IsHidden,
                 }).ToList(),
