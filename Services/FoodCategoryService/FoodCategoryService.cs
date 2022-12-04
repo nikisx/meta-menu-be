@@ -50,6 +50,11 @@ namespace meta_menu_be.Services.FoodCategoryService
                         Id = i.Id,
                         CategoryId = i.CategoryId,
                         Name = i.Name,
+                        ImageBytes = i.Image.Length > 0 ? Convert.ToBase64String(i.Image) : null,
+                        Description = i.Description,
+                        Price = i.Price,
+                        Allergens = i.Allergens,
+                        IsHidden = i.IsHidden,
                     }),
                     IsHidden = x.IsHidden,
                 }).ToList();

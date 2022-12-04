@@ -10,7 +10,7 @@ namespace meta_menu_be.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class FoodItemController : ControllerBase
+    public class FoodItemController : ControllerBaseExtended
     {
         private readonly IFoodItemService foodItemService;
         public FoodItemController(IFoodItemService foodItemService)
@@ -23,8 +23,30 @@ namespace meta_menu_be.Controllers
         [Route("create")]
         public ServiceResult<bool> Create([FromForm] FoodItemJsonModel model)
         {
-            string userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            string userId = GetLoggednInUserId();
             var res = foodItemService.Create(model, userId);
+
+            return res;
+        }
+
+        [Authorize]
+        [HttpPost]
+        [Route("edit")]
+        public ServiceResult<bool> Edit([FromForm] FoodItemJsonModel model)
+        {
+            string userId = GetLoggednInUserId();
+            var res = foodItemService.Edit(model, userId);
+
+            return res;
+        }
+
+        [Authorize]
+        [HttpPost]
+        [Route("edit-hide")]
+        public ServiceResult<bool> EditHide(FoodItemJsonModel model)
+        {
+            string userId = GetLoggednInUserId();
+            var res = foodItemService.HideItem(model, userId);
 
             return res;
         }

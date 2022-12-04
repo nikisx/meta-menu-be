@@ -11,5 +11,6 @@
         public string? Allergens { get; set; }
         public IFormFile? Image { get; set; }
         public string? ImageBytes { get; set; }
+        public bool IsHidden { get; set; }
     }
 }

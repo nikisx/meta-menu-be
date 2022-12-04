@@ -33,9 +33,49 @@ namespace meta_menu_be.Services.FoodCategoryService
             return new ServiceResult<bool>(true);
         }
 
+        public ServiceResult<bool> Edit(FoodItemJsonModel model, string userId)
+        {
+            var foodItem = dbContext.FoodItems.FirstOrDefault(x => x.Id == model.Id);
+
+            if (foodItem == null)
+            {
+                return new ServiceResult<bool>("Invalid Id!");
+            }
+
+            foodItem.Name = model.Name;
+            foodItem.Price = model.Price;
+            foodItem.Description = model.Description;
+            foodItem.Allergens = model.Allergens;
+
+            if (model.Image != null)
+            {
+                MemoryStream memoryStream = new MemoryStream();
+                model.Image?.CopyTo(memoryStream);
+                foodItem.Image = memoryStream.ToArray();
+            }
+            else if(model.ImageBytes == null)
+            {
+                foodItem.Image = null;
+            }
+
+            dbContext.SaveChanges(userId);
+
+            return new ServiceResult<bool>(true);
+        }
+
         public ServiceResult<List<FoodItemJsonModel>> GetAll(string userId)
         {
             throw new NotImplementedException();
+        }
+
+        public ServiceResult<bool> HideItem(FoodItemJsonModel model, string userId)
+        {
+            var item = dbContext.FoodItems.FirstOrDefault(c => c.Id == model.Id);
+            item.IsHidden = model.IsHidden;
+
+            dbContext.SaveChanges(userId);
+
+            return new ServiceResult<bool>(true);
         }
     }
 }
