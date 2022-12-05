@@ -24,8 +24,6 @@
 
   <ItemGroup>
     <Folder Include="Configs\" />
-    <Folder Include="qr-codes\" />
-    <Folder Include="qr-codes\tables-qr-codes\test\" />
   </ItemGroup>
 
 </Project>
