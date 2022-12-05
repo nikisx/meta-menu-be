@@ -42,6 +42,17 @@ namespace meta_menu_be.Controllers
 
         [Authorize]
         [HttpPost]
+        [Route("delete")]
+        public ServiceResult<bool> Delete(FoodCategoryJsonModel model)
+        {
+            string userId = this.GetLoggednInUserId();
+            var res = foodCategoryService.Delete(model, userId);
+
+            return res;
+        }
+
+        [Authorize]
+        [HttpPost]
         [Route("edit-hide")]
         public ServiceResult<bool> EditHide(FoodCategoryJsonModel model)
         {

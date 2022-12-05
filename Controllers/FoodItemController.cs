@@ -42,6 +42,17 @@ namespace meta_menu_be.Controllers
 
         [Authorize]
         [HttpPost]
+        [Route("delete")]
+        public ServiceResult<bool> Delete([FromBody] FoodItemJsonModel model)
+        {
+            string userId = GetLoggednInUserId();
+            var res = foodItemService.Delete(model, userId);
+
+            return res;
+        }
+
+        [Authorize]
+        [HttpPost]
         [Route("edit-hide")]
         public ServiceResult<bool> EditHide(FoodItemJsonModel model)
         {

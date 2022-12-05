@@ -33,6 +33,21 @@ namespace meta_menu_be.Services.FoodCategoryService
             return new ServiceResult<bool>(true);
         }
 
+        public ServiceResult<bool> Delete(FoodItemJsonModel model, string userId)
+        {
+            var foodItem = dbContext.FoodItems.FirstOrDefault(x => x.Id == model.Id);
+
+            if (foodItem == null)
+            {
+                return new ServiceResult<bool>("Invalid Id!");
+            }
+
+            dbContext.FoodItems.Remove(foodItem);
+            dbContext.SaveChanges();
+
+            return new ServiceResult<bool>(true);
+        }
+
         public ServiceResult<bool> Edit(FoodItemJsonModel model, string userId)
         {
             var foodItem = dbContext.FoodItems.FirstOrDefault(x => x.Id == model.Id);
