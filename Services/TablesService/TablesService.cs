@@ -31,21 +31,21 @@ namespace meta_menu_be.Services.TablesService
                 this.dbContext.SaveChanges(userId);
 
                
-                var link = $"http://localhost:8080/menu/{user.Id}/{newTable.Id}";
+                //var link = $"http://localhost:8080/menu/{user.Id}/{newTable.Id}";
 
-                var qrFileName = $"table-id-{newTable.Id}.png";
-                string path = Path.Combine(Environment.CurrentDirectory, @$"qr-codes\tables-qr-codes\{user.UserName}\", qrFileName);
+                //var qrFileName = $"table-id-{newTable.Id}.png";
+                //string path = Path.Combine(Environment.CurrentDirectory, @$"qr-codes\tables-qr-codes\{user.UserName}\", qrFileName);
 
-                QRCodeGenerator qrGenerator = new QRCodeGenerator();
-                QRCodeData qrCodeData = qrGenerator.CreateQrCode(link, QRCodeGenerator.ECCLevel.Q);
-                QRCode qrCode = new QRCode(qrCodeData);
-                Bitmap qrCodeImage = qrCode.GetGraphic(20);
+                //QRCodeGenerator qrGenerator = new QRCodeGenerator();
+                //QRCodeData qrCodeData = qrGenerator.CreateQrCode(link, QRCodeGenerator.ECCLevel.Q);
+                //QRCode qrCode = new QRCode(qrCodeData);
+                //Bitmap qrCodeImage = qrCode.GetGraphic(20);
 
-                Directory.CreateDirectory(Path.Combine(Environment.CurrentDirectory, @$"qr-codes\tables-qr-codes\{user.UserName}"));
+                //Directory.CreateDirectory(Path.Combine(Environment.CurrentDirectory, @$"qr-codes\tables-qr-codes\{user.UserName}"));
 
-                qrCodeImage.Save(path);
+                //qrCodeImage.Save(path);
 
-                newTable.QrCodeUrl = path;
+                //newTable.QrCodeUrl = path;
             }
 
             this.dbContext.SaveChanges(userId);
@@ -92,19 +92,25 @@ namespace meta_menu_be.Services.TablesService
                 return new ServiceResult<byte[]>("Incorect table Id!");
             }
 
-            string path = table.QrCodeUrl;
 
-            //HttpResponseMessage response = new HttpResponseMessage(HttpStatusCode.OK);
-            //response.Content = new StreamContent(new FileStream(path, FileMode.Open, FileAccess.Read));
-            //response.Content.Headers.ContentDisposition = new System.Net.Http.Headers.ContentDispositionHeaderValue("attachment");
-            //response.Content.Headers.ContentDisposition.FileName = $"qr-code-{table.Number}";
-            //response.Content.Headers.ContentType = new MediaTypeHeaderValue("image/png");
+            var link = $"http://localhost:8080/menu/{userId}/{table.Id}";
 
-            //var stream = new FileStream(path, FileMode.Open, FileAccess.Read);
+            var qrFileName = $"table-id-{table.Id}.png";
 
-            var a = File.ReadAllBytes(path);
+            QRCodeGenerator qrGenerator = new QRCodeGenerator();
+            QRCodeData qrCodeData = qrGenerator.CreateQrCode(link, QRCodeGenerator.ECCLevel.Q);
+            QRCode qrCode = new QRCode(qrCodeData);
+            Bitmap qrCodeImage = qrCode.GetGraphic(20);
 
-            return new ServiceResult<byte[]>(a);
+            byte[] res = null;
+
+            using (var stream = new MemoryStream())
+            {
+                qrCodeImage.Save(stream, System.Drawing.Imaging.ImageFormat.Png);
+                res = stream.ToArray();
+            }
+
+            return new ServiceResult<byte[]>(res);
         }
     }
 }
