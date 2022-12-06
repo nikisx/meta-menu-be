@@ -52,6 +52,21 @@ namespace meta_menu_be.Services.TablesService
             return new ServiceResult<bool>(true);
         }
 
+        public ServiceResult<bool> Delete(int tableId, string userId)
+        {
+            var table = dbContext.Tables.FirstOrDefault(x => x.Id == tableId);
+
+            if (table is null)
+            {
+                return new ServiceResult<bool>("Table Id is incorrect!");
+            }
+
+            dbContext.Tables.Remove(table);
+            dbContext.SaveChanges(userId);
+
+            return new ServiceResult<bool>(true);
+        }
+
         public ServiceResult<bool> Edit(int tableId, string number, string userId)
         {
             var table = dbContext.Tables.FirstOrDefault(x => x.Id == tableId);

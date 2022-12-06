@@ -8,6 +8,7 @@ namespace meta_menu_be.Services.TablesService
     {
         ServiceResult<bool> Create(int tableNumber, string userId);
         ServiceResult<bool> Edit(int tableId, string number, string userId);
+        ServiceResult<bool> Delete(int tableId, string userId);
         ServiceResult<byte[]> GetTableQrImage(int tableId, string userId);
         ServiceResult<List<TableJsonModel>> GetAll(string userId);
     }

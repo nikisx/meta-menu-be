@@ -12,7 +12,7 @@ namespace meta_menu_be.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class TablesController : ControllerBase
+    public class TablesController : ControllerBaseExtended
     {
         private readonly ITablesService tablesService;
         public TablesController(ITablesService tablesService)
@@ -34,10 +34,20 @@ namespace meta_menu_be.Controllers
 
         [Authorize]
         [HttpPost]
+        [Route("delete")]
+        public ServiceResult<bool> Delete([FromBody] TableJsonModel model)
+        {
+            string userId = GetLoggednInUserId();
+            var res = tablesService.Delete(model.Id, userId);
+
+            return res;
+        }
+
+        [Authorize]
+        [HttpPost]
         [Route("edit")]
         public ServiceResult<bool> Edit([FromBody] TableJsonModel model)
         {
-            string domainName = HttpContext.Request.Host.Value;
             string userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             var res = tablesService.Edit(model.Id, model.Number, userId);
 
