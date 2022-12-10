@@ -51,6 +51,8 @@ namespace meta_menu_be.Services.OrdersService
                 UserId = order.UserId,
                 TableNumber = order.TableNumber,
                 Items = model.Items,
+                Time = order.Created.Value.ToString("HH:mm"),
+                Price = string.Format("{0:f2}", order.Items.Sum(i => i.Item.Price * i.Quantity)),
             };
 
             return new ServiceResult<OrderJsonModel>(res);
@@ -68,11 +70,14 @@ namespace meta_menu_be.Services.OrdersService
                     Id = x.Id,
                     UserId = x.UserId,
                     TableNumber = x.TableNumber,
+                    Time = x.Created.Value.ToString("HH:mm"),
+                    Price = string.Format("{0:f2}", x.Items.Sum(i => i.Item.Price * i.Quantity)),
                     Items = x.Items.Select(i => new FoodItemJsonModel
                     {
                         Id = i.Id,
                         Name = i.Item.Name,
                         Quantity = i.Quantity,
+                        Price = i.Item.Price,
                     }).ToList()
                 }).ToList();
 

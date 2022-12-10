@@ -9,7 +9,8 @@ namespace meta_menu_be.JsonModels
         public string? UserId { get; set; }
 
         public string? TableNumber { get; set; }
-
+        public string? Time { get; set; }
+        public string? Price { get; set; }
         public List<FoodItemJsonModel>? Items { get; set; }
     }
 }
