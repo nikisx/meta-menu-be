@@ -7,6 +7,7 @@ namespace meta_menu_be.Services.OrdersService
     public interface IOrderService
     {
         ServiceResult<OrderJsonModel> Create(OrderJsonModel model);
+        ServiceResult<bool> Finish(OrderJsonModel model, string userId);
         ServiceResult<List<OrderJsonModel>> GetAllForUser(string userId);
     }
 }

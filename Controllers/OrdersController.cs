@@ -14,7 +14,7 @@ namespace meta_menu_be.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class OrdersController : ControllerBase
+    public class OrdersController : ControllerBaseExtended
     {   
         private IOrderService orderService;
         private IHubContext<OrderHub, IOrderHub> hubContext;
@@ -34,6 +34,16 @@ namespace meta_menu_be.Controllers
             {
                 hubContext.Clients.All.NewOrderRecieved(res.Data, model.UserId);
             }
+
+            return res;
+        }
+
+        [HttpPost]
+        [Route("finish")]
+        public ServiceResult<bool> Finish([FromBody] OrderJsonModel model)
+        {
+            var res = orderService.Finish(model, GetLoggednInUserId());
+
 
             return res;
         }

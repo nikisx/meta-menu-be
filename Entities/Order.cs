@@ -7,7 +7,7 @@
         public virtual ApplicationUser User { get; set; }
 
         public string TableNumber { get; set; }
-
+        public bool IsFinished { get; set; }
         public virtual ICollection<OrderItems> Items { get; set; } = new HashSet<OrderItems>();
     }
 }
