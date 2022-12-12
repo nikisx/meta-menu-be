@@ -24,7 +24,7 @@ namespace meta_menu_be.Services.FoodCategoryService
                 Image = memoryStream.ToArray(),
                 Description = model.Description,
                 Allergens = model.Allergens,
-                Price = model.Price,
+                Price = double.Parse(model.Price),
             };
 
             dbContext.FoodItems.Add(foodItem);
@@ -58,7 +58,7 @@ namespace meta_menu_be.Services.FoodCategoryService
             }
 
             foodItem.Name = model.Name;
-            foodItem.Price = model.Price;
+            foodItem.Price = double.Parse(model.Price);
             foodItem.Description = model.Description;
             foodItem.Allergens = model.Allergens;
 

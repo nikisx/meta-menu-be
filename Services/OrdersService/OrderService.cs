@@ -68,7 +68,7 @@ namespace meta_menu_be.Services.OrdersService
                     Id = i.Id,
                     Name = i.Item.Name,
                     Quantity = i.Quantity,
-                    Price = i.Item.Price,
+                    Price = string.Format("{0:f2}", i.Item.Price),
                 }).ToList(),
                 Time = resOrder.Created.Value.ToString("HH:mm"),
                 Price = string.Format("{0:f2}", resOrder.Items.Sum(i => i.Item.Price * i.Quantity)),
@@ -111,7 +111,7 @@ namespace meta_menu_be.Services.OrdersService
                         Id = i.Id,
                         Name = i.Item.Name,
                         Quantity = i.Quantity,
-                        Price = i.Item.Price,
+                        Price = string.Format("{0:f2}", i.Item.Price),
                     }).ToList()
                 }).ToList();
 

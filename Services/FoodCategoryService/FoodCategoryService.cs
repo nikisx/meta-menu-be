@@ -67,7 +67,7 @@ namespace meta_menu_be.Services.FoodCategoryService
                         Name = i.Name,
                         ImageBytes = i.Image.Length > 0 ? Convert.ToBase64String(i.Image) : null,
                         Description = i.Description,
-                        Price = i.Price,
+                        Price = string.Format("{0:f2}", i.Price),
                         Allergens = i.Allergens,
                         IsHidden = i.IsHidden,
                     }),

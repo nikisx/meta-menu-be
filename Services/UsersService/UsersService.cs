@@ -80,7 +80,7 @@ namespace meta_menu_be.Services.UsersService
                         IsHidden = i.IsHidden,
                         Description = i.Description,
                         Allergens = i.Allergens,
-                        Price = i.Price,
+                        Price = string.Format("{0:f2}", i.Price),
                     }).ToList(),
                     IsHidden = x.IsHidden,
                 }).ToList(),
