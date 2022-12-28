@@ -37,6 +37,15 @@ namespace meta_menu_be.Controllers
             return res;
         }
 
+        [Route("edit-username")]
+        [HttpPost]
+        public ServiceResult<bool> EditUserName(UserJsonModel model)
+        {
+            var res = usersService.EditUserName(model.Username, this.GetLoggednInUserId());
+
+            return res;
+        }
+
         [Route("update-type")]
         [HttpPost]
         [Authorize(Roles = "Admin")]

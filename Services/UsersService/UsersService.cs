@@ -148,5 +148,23 @@ namespace meta_menu_be.Services.UsersService
                 CurrentMonthOrdersCount = userOrders.Count,
             });
         }
+
+        public ServiceResult<bool> EditUserName(string name, string userId)
+        {
+            var user = this.dbContext.Users
+                 .Include(x => x.Orders)
+                 .FirstOrDefault(x => x.Id == userId);
+
+            if (user == null)
+            {
+                return new ServiceResult<bool>("Invalid User Id!");
+            }
+
+            user.UserName = name;
+
+            dbContext.SaveChanges(userId);
+
+            return new ServiceResult<bool>(true);
+        }
     }
 }
