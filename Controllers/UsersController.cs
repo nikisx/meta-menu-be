@@ -37,11 +37,11 @@ namespace meta_menu_be.Controllers
             return res;
         }
 
-        [Route("edit-username")]
+        [Route("edit-user-info")]
         [HttpPost]
         public ServiceResult<bool> EditUserName(UserJsonModel model)
         {
-            var res = usersService.EditUserName(model.Username, this.GetLoggednInUserId());
+            var res = usersService.EditUserInfo(model.Username, model.Wifi, this.GetLoggednInUserId());
 
             return res;
         }

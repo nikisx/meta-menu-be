@@ -152,6 +152,7 @@ namespace meta_menu_be.Controllers
                 Id = applicationUser.Id,
                 Username = applicationUser.UserName,
                 Email = applicationUser.Email,
+                Wifi = applicationUser.Wifi,
                 Roles = roles,
                 Categories = applicationUser.Categories.OrderByDescending(x => x.Created).Select(x => new FoodCategoryJsonModel
                 {

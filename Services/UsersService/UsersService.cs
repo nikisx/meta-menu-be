@@ -67,6 +67,7 @@ namespace meta_menu_be.Services.UsersService
                 Id = applicationUser.Id,
                 Username = applicationUser.UserName,
                 Email = applicationUser.Email,
+                Wifi = applicationUser.Wifi,
                 Categories = applicationUser.Categories.Select(x => new FoodCategoryJsonModel
                 {
                     Name = x.Name,
@@ -149,7 +150,7 @@ namespace meta_menu_be.Services.UsersService
             });
         }
 
-        public ServiceResult<bool> EditUserName(string name, string userId)
+        public ServiceResult<bool> EditUserInfo(string name, string wifi, string userId)
         {
             var user = this.dbContext.Users
                  .Include(x => x.Orders)
@@ -161,6 +162,7 @@ namespace meta_menu_be.Services.UsersService
             }
 
             user.UserName = name;
+            user.Wifi = wifi;
 
             dbContext.SaveChanges(userId);
 
