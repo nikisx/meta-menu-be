@@ -38,9 +38,12 @@ namespace meta_menu_be
             {
                 options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
                 options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-                options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+                
             })
-
+                .AddCookie(x =>
+                {
+                    x.Cookie.Name = "token";
+                })
             // Adding Jwt Bearer
             .AddJwtBearer(options =>
             {
@@ -53,6 +56,14 @@ namespace meta_menu_be
                     ValidAudience = configuration["JWT:ValidAudience"],
                     ValidIssuer = configuration["JWT:ValidIssuer"],
                     IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["JWT:Secret"]))
+                };
+                options.Events = new JwtBearerEvents
+                {
+                    OnMessageReceived = context =>
+                    {
+                        context.Token = context.Request.Cookies["token"];
+                        return Task.CompletedTask;
+                    }
                 };
             });
 
@@ -85,6 +96,7 @@ namespace meta_menu_be
             {
                 builder
                 .WithOrigins("http://localhost:8080", "https://localhost:44349")
+                .SetIsOriginAllowed(host => true)
                 .AllowAnyMethod()
                 .AllowAnyHeader()
                 .AllowCredentials();

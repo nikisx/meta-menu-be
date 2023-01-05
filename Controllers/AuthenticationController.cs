@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
+using Newtonsoft.Json.Linq;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
@@ -71,10 +72,19 @@ namespace meta_menu_be.Controllers
 
                 var token = GetToken(authClaims);
 
+                HttpContext.Response.Cookies.Append("token", new JwtSecurityTokenHandler().WriteToken(token),
+                    new CookieOptions
+                    {
+                        Expires = DateTime.Now.AddDays(7),
+                        HttpOnly = true,
+                        Secure = true,
+                        IsEssential = true,
+                        SameSite = SameSiteMode.None,
+                    });
 
                 return Ok(new
                 {
-                    Token = new JwtSecurityTokenHandler().WriteToken(token),
+                    //Token = new JwtSecurityTokenHandler().WriteToken(token),
                     Data = MapUser(user, userRoles),
                     Success = true,
                 });
@@ -148,6 +158,32 @@ namespace meta_menu_be.Controllers
             UserJsonModel user = MapUser(applicationUser, roles);
 
             return Ok(user);
+        }
+
+        [Route("logout")]
+        [HttpPost]
+        public async Task<IActionResult> Logout()
+        {
+            if (HttpContext.Request.Cookies["token"] != null)
+            {
+
+                HttpContext.Response.Cookies.Append("token", "",
+                      new CookieOptions
+                      {
+                          Expires = DateTime.Now.AddDays(-1),
+                          HttpOnly = true,
+                          Secure = true,
+                          IsEssential = true,
+                          SameSite = SameSiteMode.None,
+                      });
+            }
+
+            return Ok(new ServiceResult<bool>
+                    {
+                        Status = "Success",
+                        Success = true,
+                        Message = "Success",
+                    });
         }
 
         private static UserJsonModel MapUser(ApplicationUser applicationUser, IList<string> roles)
