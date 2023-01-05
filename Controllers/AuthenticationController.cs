@@ -48,7 +48,12 @@ namespace meta_menu_be.Controllers
                 .Include(x => x.Tables)
                 .FirstOrDefault(x => x.Email == model.Email);
 
-            if (user != null && await userManager.CheckPasswordAsync(user, model.Password))
+            if (user == null)
+            {
+                return Unauthorized("Грешно въведен имейл!");
+            }
+
+            if (await userManager.CheckPasswordAsync(user, model.Password))
             {
                 var userRoles = await userManager.GetRolesAsync(user);
 
@@ -74,7 +79,7 @@ namespace meta_menu_be.Controllers
                     Success = true,
                 });
             }
-            return Unauthorized();
+            return Unauthorized("Грешна парола!");
         }
 
         [HttpPost]
