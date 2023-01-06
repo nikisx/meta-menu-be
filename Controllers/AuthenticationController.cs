@@ -100,11 +100,11 @@ namespace meta_menu_be.Controllers
 
             if (userExists != null)
             {
-                return BadRequest(new ServiceResult<int>
+                return Ok(new ServiceResult<int>
                 {
                     Status = "Failed",
                     Success = false,
-                    Message = "User with that email already exists!",
+                    Message = "Потребител с този имейл адрес вече съществува!",
                 });
             }
 
