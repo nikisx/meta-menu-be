@@ -1,6 +1,7 @@
 ﻿using meta_menu_be.Common;
 using meta_menu_be.Entities;
 using meta_menu_be.JsonModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
@@ -184,6 +185,44 @@ namespace meta_menu_be.Controllers
                         Success = true,
                         Message = "Success",
                     });
+        }
+
+        [Route("change-password")]
+        [HttpPost]
+        [Authorize]
+        public async Task<IActionResult> ChangePassword([FromBody] ChangePasswordModel model)
+        {
+            string userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+            ApplicationUser applicationUser = this.dbContext.Users
+                .FirstOrDefault(x => x.Id == userId);
+
+            if (applicationUser == null)
+            {
+                return BadRequest("Потребителят не е намерен!");
+            }
+
+            var res = await this.userManager.ChangePasswordAsync(applicationUser, model.OldPassword, model.NewPassword);
+
+            if (res.Succeeded)
+            {
+                return Ok(new ServiceResult<bool>
+                {
+                    Status = "Success",
+                    Success = true,
+                    Message = "Success",
+                });
+            }
+            else
+            {
+                return Ok(new ServiceResult<bool>
+                {
+                    Status = "Fail",
+                    Success = false,
+                    Message = "Нещо се обърка, моля опитайте отново.",
+                });
+            }
+           
         }
 
         private static UserJsonModel MapUser(ApplicationUser applicationUser, IList<string> roles)

@@ -14,4 +14,12 @@ namespace meta_menu_be.JsonModels
         [Required(ErrorMessage = "Password is required")]
         public string Password { get; set; }
     }
+
+    public class ChangePasswordModel
+    {
+        [Required(ErrorMessage = "New Password is required")]
+        public string NewPassword { get; set; }
+        [Required(ErrorMessage = "Old Password is required")]
+        public string OldPassword { get; set; }
+    }
 }
