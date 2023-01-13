@@ -168,5 +168,40 @@ namespace meta_menu_be.Services.UsersService
 
             return new ServiceResult<bool>(true);
         }
+
+        public ServiceResult<bool> DeleteUser(string userId, string loggedInUserId)
+        {
+            if (userId != loggedInUserId)
+            {
+                return new ServiceResult<bool>("No access");
+            }
+
+            var user = dbContext.Users
+                .Include(x => x.Orders)
+                .ThenInclude(x => x.Items)
+                .Include(x => x.Categories)
+                .ThenInclude(x => x.Items)
+                .Include(x => x.Tables)
+                .FirstOrDefault(x => x.Id == userId);
+
+            foreach (var order in user.Orders)
+            {
+                this.dbContext.OrdersItems.RemoveRange(order.Items);
+            }
+            foreach (var category in user.Categories)
+            {
+                this.dbContext.FoodItems.RemoveRange(category.Items);
+            }
+
+            this.dbContext.Orders.RemoveRange(user.Orders);
+            this.dbContext.Tables.RemoveRange(user.Tables);
+            this.dbContext.FoodCategories.RemoveRange(user.Categories);
+
+            this.dbContext.Users.Remove(user);
+
+            this.dbContext.SaveChanges();
+
+            return new ServiceResult<bool>(true);
+        }
     }
 }

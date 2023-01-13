@@ -66,6 +66,15 @@ namespace meta_menu_be.Controllers
             return res;
         }
 
+        [Route("delete")]
+        [HttpPost]
+        public ServiceResult<bool> DeleteAllOrders([FromBody] UserJsonModel model)
+        {
+            var res = usersService.DeleteUser(model.Id, GetLoggednInUserId());
+
+            return res;
+        }
+
         [Route("get-statistics")]
         [Authorize]
         public ServiceResult<StatisticsJsonModel> GetStatistics()

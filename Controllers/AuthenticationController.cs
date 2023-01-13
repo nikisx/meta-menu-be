@@ -1,6 +1,7 @@
 ﻿using meta_menu_be.Common;
 using meta_menu_be.Entities;
 using meta_menu_be.JsonModels;
+using meta_menu_be.Services.UsersService;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Http;
@@ -25,18 +26,18 @@ namespace meta_menu_be.Controllers
         private readonly RoleManager<IdentityRole> roleManager;
         private readonly IConfiguration _configuration;
         private readonly ApplicationDbContext dbContext;
-        private readonly AppSettings _appSettings;
+        private readonly IUsersService usersService;
 
         public AuthenticationController(UserManager<ApplicationUser> userManager,
             RoleManager<IdentityRole> roleManager, IConfiguration configuration,
-            SignInManager<ApplicationUser> signInManager, ApplicationDbContext dbContext, IOptions<AppSettings> appSettings)
+            SignInManager<ApplicationUser> signInManager, ApplicationDbContext dbContext, IUsersService usersService )
         {
             this.userManager = userManager;
             this.roleManager = roleManager;
             this.signInManager = signInManager;
             _configuration = configuration;
             this.dbContext = dbContext;
-            this._appSettings = appSettings.Value;
+            this.usersService = usersService;
         }
 
 
@@ -165,6 +166,40 @@ namespace meta_menu_be.Controllers
         [HttpPost]
         public async Task<IActionResult> Logout()
         {
+            RemoveAuthCookie();
+
+            return Ok(new ServiceResult<bool>
+                    {
+                        Status = "Success",
+                        Success = true,
+                        Message = "Success",
+                    });
+        }
+
+        [Route("delete")]
+        [HttpPost]
+        [Authorize]
+        public async Task<IActionResult> DeleteUser([FromBody] UserJsonModel model)
+        {
+            string userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+            var res =  this.usersService.DeleteUser(model.Id, userId);
+
+            if (res.Success)
+            {
+                RemoveAuthCookie();
+            }
+
+            return Ok(new ServiceResult<bool>
+                    {
+                        Status = "Success",
+                        Success = true,
+                        Message = "Success",
+                    });
+        }
+
+        private void RemoveAuthCookie()
+        {
             if (HttpContext.Request.Cookies["token"] != null)
             {
 
@@ -178,13 +213,6 @@ namespace meta_menu_be.Controllers
                           SameSite = SameSiteMode.None,
                       });
             }
-
-            return Ok(new ServiceResult<bool>
-                    {
-                        Status = "Success",
-                        Success = true,
-                        Message = "Success",
-                    });
         }
 
         [Route("change-password")]
