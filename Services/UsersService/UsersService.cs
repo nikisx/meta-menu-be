@@ -68,6 +68,7 @@ namespace meta_menu_be.Services.UsersService
                 Username = applicationUser.UserName,
                 Email = applicationUser.Email,
                 Wifi = applicationUser.Wifi,
+                ImageBytes = applicationUser.ImageBytes?.Length > 0 ? Convert.ToBase64String(applicationUser.ImageBytes) : null,
                 Categories = applicationUser.Categories.Select(x => new FoodCategoryJsonModel
                 {
                     Name = x.Name,
@@ -198,6 +199,26 @@ namespace meta_menu_be.Services.UsersService
             this.dbContext.FoodCategories.RemoveRange(user.Categories);
 
             this.dbContext.Users.Remove(user);
+
+            this.dbContext.SaveChanges();
+
+            return new ServiceResult<bool>(true);
+        }
+
+        public ServiceResult<bool> UpdateUserProfileImage(UserJsonModel model, string userId)
+        {
+            var user = this.dbContext.Users
+               .FirstOrDefault(x => x.Id == userId);
+
+            if (user == null)
+            {
+                return new ServiceResult<bool>("Invalid User Id!");
+            }
+
+            MemoryStream memoryStream = new MemoryStream();
+            model.Image?.CopyTo(memoryStream);
+
+            user.ImageBytes = memoryStream.ToArray();
 
             this.dbContext.SaveChanges();
 

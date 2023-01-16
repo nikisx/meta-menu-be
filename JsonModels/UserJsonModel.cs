@@ -11,6 +11,8 @@ namespace meta_menu_be.JsonModels
         public string? Wifi{ get; set; }
 
         public int AccountType { get; set; }
+        public IFormFile? Image { get; set; }
+        public string? ImageBytes { get; set; }
 
         public ICollection<string>? Roles { get; set; }
         public virtual ICollection<FoodCategoryJsonModel>? Categories { get; set; } 

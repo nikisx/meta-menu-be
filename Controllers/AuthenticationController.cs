@@ -262,6 +262,7 @@ namespace meta_menu_be.Controllers
                 Email = applicationUser.Email,
                 Wifi = applicationUser.Wifi,
                 Roles = roles,
+                ImageBytes = applicationUser.ImageBytes?.Length > 0 ? Convert.ToBase64String(applicationUser.ImageBytes) : null,
                 Categories = applicationUser.Categories.OrderByDescending(x => x.Created).Select(x => new FoodCategoryJsonModel
                 {
                     Name = x.Name,

@@ -7,6 +7,7 @@ namespace meta_menu_be.Entities
     {
         public int LastMonthOrdersCount { get; set; }
         public int CurrentMonthOrdersCount { get; set; }
+        public byte[]? ImageBytes { get; set; }
         public string? Wifi { get; set; }
         public AccountType AccountType { get; set; }
         public virtual ICollection<FoodCategory> Categories { get; set; } = new HashSet<FoodCategory>();

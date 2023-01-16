@@ -7,6 +7,7 @@ namespace meta_menu_be.Services.UsersService
     {
         ServiceResult<List<UserJsonModel>> GetAll();
         ServiceResult<UserJsonModel> GetUserInfo(string id);
+        ServiceResult<bool> UpdateUserProfileImage(UserJsonModel model, string userId);
         ServiceResult<int> UpdateUserAccountType(string userId, int accountType, string loggedInUserId);
         ServiceResult<bool> DeleteAllOrders();
         ServiceResult<bool> DeleteUser(string userId, string loggedInUserId);
