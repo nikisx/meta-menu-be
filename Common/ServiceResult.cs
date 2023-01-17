@@ -6,10 +6,10 @@
         {
 
         }
-        public ServiceResult(T data)
+        public ServiceResult(T data, bool success = true)
         {
             this.Data = data;
-            this.Success = true;
+            this.Success = success;
         }
         public ServiceResult(string errors)
         {

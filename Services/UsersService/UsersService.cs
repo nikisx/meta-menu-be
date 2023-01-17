@@ -205,14 +205,14 @@ namespace meta_menu_be.Services.UsersService
             return new ServiceResult<bool>(true);
         }
 
-        public ServiceResult<bool> UpdateUserProfileImage(UserJsonModel model, string userId)
+        public ServiceResult<string> UpdateUserProfileImage(UserJsonModel model, string userId)
         {
             var user = this.dbContext.Users
                .FirstOrDefault(x => x.Id == userId);
 
             if (user == null)
             {
-                return new ServiceResult<bool>("Invalid User Id!");
+                return new ServiceResult<string>("Invalid User Id!");
             }
 
             MemoryStream memoryStream = new MemoryStream();
@@ -222,7 +222,7 @@ namespace meta_menu_be.Services.UsersService
 
             this.dbContext.SaveChanges();
 
-            return new ServiceResult<bool>(true);
+            return new ServiceResult<string>(Convert.ToBase64String(user.ImageBytes), true);
         }
     }
 }

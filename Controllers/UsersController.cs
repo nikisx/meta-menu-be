@@ -48,7 +48,7 @@ namespace meta_menu_be.Controllers
 
         [Route("update-image")]
         [HttpPost]
-        public ServiceResult<bool> UpdateUserImage([FromForm] UserJsonModel model)
+        public ServiceResult<string> UpdateUserImage([FromForm] UserJsonModel model)
         {
             var res = usersService.UpdateUserProfileImage(model, this.GetLoggednInUserId());
 
