@@ -12,6 +12,22 @@ namespace meta_menu_be.Services.OrdersService
         {
             this.dbContext = dbContext;
         }
+
+        public ServiceResult<bool> ChangeOrderToOld(OrderJsonModel model, string userId)
+        {
+            var order = dbContext.Orders.FirstOrDefault(x => x.Id == model.Id);
+
+            if (order == null)
+            {
+                return new ServiceResult<bool>("Invalid Id!");
+            }
+
+            order.IsNew = false;
+            dbContext.SaveChanges(userId);
+
+            return new ServiceResult<bool>(true);
+        }
+
         public ServiceResult<OrderJsonModel> Create(OrderJsonModel model)
         {
             var table = dbContext.Tables.FirstOrDefault(x => x.Id == model.TableId);
@@ -32,6 +48,7 @@ namespace meta_menu_be.Services.OrdersService
                 {
                     UserId = model.UserId,
                     TableNumber = table.Number,
+                    IsNew = true,
                 };
 
                 dbContext.Orders.Add(order);
@@ -63,6 +80,7 @@ namespace meta_menu_be.Services.OrdersService
                 Id = resOrder.Id,
                 UserId = resOrder.UserId,
                 TableNumber = resOrder.TableNumber,
+                IsNew = resOrder.IsNew,
                 Items = resOrder.Items.Select(i => new FoodItemJsonModel
                 {
                     Id = i.Id,
@@ -104,8 +122,8 @@ namespace meta_menu_be.Services.OrdersService
                     Id = x.Id,
                     UserId = x.UserId,
                     TableNumber = x.TableNumber,
+                    IsNew = x.IsNew,
                     Time = x.Created.Value.ToString("HH:mm"),
-                    Price = string.Format("{0:f2}", x.Items.Sum(i => i.Item.Price * i.Quantity)),
                     Items = x.Items.Select(i => new FoodItemJsonModel
                     {
                         Id = i.Id,
@@ -115,7 +133,10 @@ namespace meta_menu_be.Services.OrdersService
                     }).ToList()
                 }).ToList();
 
-           
+            foreach (var order in res)
+            {
+                order.Price = string.Format("{0:f2}", order.Items.Sum(i => double.Parse(i.Price) * i.Quantity));
+            }
 
             return new ServiceResult<List<OrderJsonModel>>(res);
         }

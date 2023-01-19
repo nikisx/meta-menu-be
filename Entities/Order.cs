@@ -6,6 +6,7 @@
         public string UserId { get; set; }
         public virtual ApplicationUser User { get; set; }
 
+        public bool IsNew { get; set; }
         public string TableNumber { get; set; }
         public bool IsFinished { get; set; }
         public virtual ICollection<OrderItems> Items { get; set; } = new HashSet<OrderItems>();

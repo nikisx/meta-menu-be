@@ -48,6 +48,15 @@ namespace meta_menu_be.Controllers
             return res;
         }
 
+        [HttpPost]
+        [Route("open")]
+        public ServiceResult<bool> ChangeOrderToOld([FromBody] OrderJsonModel model)
+        {
+            var res = orderService.ChangeOrderToOld(model, GetLoggednInUserId());
+
+            return res;
+        }
+
         [Route("get-all")]
         [Authorize]
         public ServiceResult<List<OrderJsonModel>> GetAll()

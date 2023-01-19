@@ -7,7 +7,7 @@ namespace meta_menu_be.JsonModels
         public int Id { get; set; }
         public int TableId { get; set; }
         public string? UserId { get; set; }
-
+        public bool? IsNew { get; set; }
         public string? TableNumber { get; set; }
         public string? Time { get; set; }
         public string? Price { get; set; }

@@ -8,6 +8,7 @@ namespace meta_menu_be.Services.OrdersService
     {
         ServiceResult<OrderJsonModel> Create(OrderJsonModel model);
         ServiceResult<bool> Finish(OrderJsonModel model, string userId);
+        ServiceResult<bool> ChangeOrderToOld(OrderJsonModel model, string userId);
         ServiceResult<List<OrderJsonModel>> GetAllForUser(string userId);
     }
 }
