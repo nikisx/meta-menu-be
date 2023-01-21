@@ -35,13 +35,16 @@ namespace meta_menu_be.Services.FoodCategoryService
 
         public ServiceResult<bool> Delete(FoodItemJsonModel model, string userId)
         {
-            var foodItem = dbContext.FoodItems.FirstOrDefault(x => x.Id == model.Id);
+            var foodItem = dbContext.FoodItems
+                .Include(x => x.Orders)
+                .FirstOrDefault(x => x.Id == model.Id);
 
             if (foodItem == null)
             {
                 return new ServiceResult<bool>("Invalid Id!");
             }
 
+            dbContext.OrdersItems.RemoveRange(foodItem.Orders);
             dbContext.FoodItems.Remove(foodItem);
             dbContext.SaveChanges();
 

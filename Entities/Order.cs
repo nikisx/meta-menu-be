@@ -1,4 +1,6 @@
-﻿namespace meta_menu_be.Entities
+﻿using meta_menu_be.Enums;
+
+namespace meta_menu_be.Entities
 {
     public class Order : BaseEntity
     {
@@ -8,6 +10,7 @@
 
         public bool IsNew { get; set; }
         public string TableNumber { get; set; }
+        public OrderType Type { get; set; }
         public bool IsFinished { get; set; }
         public virtual ICollection<OrderItems> Items { get; set; } = new HashSet<OrderItems>();
     }

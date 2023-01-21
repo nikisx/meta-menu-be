@@ -1,5 +1,6 @@
 ﻿using meta_menu_be.Common;
 using meta_menu_be.Entities;
+using meta_menu_be.Enums;
 using meta_menu_be.JsonModels;
 using Microsoft.EntityFrameworkCore;
 
@@ -42,32 +43,35 @@ namespace meta_menu_be.Services.OrdersService
                 .ThenInclude(x => x.Item)
                 .FirstOrDefault(x => x.TableNumber == table.Number && x.UserId == model.UserId && !x.IsFinished);
 
-            if (order == null)
+            if (order == null || model.Type == 1 || model.Type == 2)
             {
                 order = new Order()
                 {
                     UserId = model.UserId,
                     TableNumber = table.Number,
                     IsNew = true,
+                    Type = (OrderType)model.Type,
                 };
 
                 dbContext.Orders.Add(order);
                 dbContext.SaveChanges();
 
             }
-
-            foreach (var item in model.Items)
+            if (model.Items is not null)
             {
-                var orderItems = new OrderItems
+                foreach (var item in model.Items)
                 {
-                    ItemId = item.Id,
-                    OrderId = order.Id,
-                    Quantity = item.Quantity,
-                };
+                    var orderItems = new OrderItems
+                    {
+                        ItemId = item.Id,
+                        OrderId = order.Id,
+                        Quantity = item.Quantity,
+                    };
 
-                dbContext.OrdersItems.Add(orderItems);
+                    dbContext.OrdersItems.Add(orderItems);
+                }
             }
-
+            
             dbContext.SaveChanges();
 
             var resOrder = dbContext.Orders
@@ -90,6 +94,7 @@ namespace meta_menu_be.Services.OrdersService
                 }).ToList(),
                 Time = resOrder.Created.Value.ToString("HH:mm"),
                 Price = string.Format("{0:f2}", resOrder.Items.Sum(i => i.Item.Price * i.Quantity)),
+                Type = (int)resOrder.Type,
             };
 
             return new ServiceResult<OrderJsonModel>(res);
@@ -105,6 +110,12 @@ namespace meta_menu_be.Services.OrdersService
             }
 
             order.IsFinished = true;
+
+            if (order.Type == OrderType.Bill || order.Type == OrderType.BillCard)
+            {
+                this.dbContext.Orders.Remove(order);
+            }
+
             dbContext.SaveChanges(userId);
 
             return new ServiceResult<bool>(true);
@@ -123,6 +134,7 @@ namespace meta_menu_be.Services.OrdersService
                     UserId = x.UserId,
                     TableNumber = x.TableNumber,
                     IsNew = x.IsNew,
+                    Type = (int)x.Type,
                     Time = x.Created.Value.ToString("HH:mm"),
                     Items = x.Items.Select(i => new FoodItemJsonModel
                     {
