@@ -62,6 +62,17 @@ namespace meta_menu_be.Controllers
             return res;
         }
 
+        [Authorize]
+        [HttpPost]
+        [Route("edit-focus")]
+        public ServiceResult<bool> EditFocus(FoodCategoryJsonModel model)
+        {
+            string userId = this.GetLoggednInUserId();
+            var res = foodCategoryService.EditFocus(model, userId);
+
+            return res;
+        }
+
         [Route("get-all")]
         public ServiceResult<List<FoodCategoryJsonModel>> GetAll(string? userId)
         {

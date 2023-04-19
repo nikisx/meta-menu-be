@@ -36,7 +36,7 @@ namespace meta_menu_be
                 options.Password.RequireLowercase = false;
                 options.Password.RequireNonAlphanumeric = false;
                 options.Password.RequireUppercase = false;
-                options.User.AllowedUserNameCharacters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._@+/ÿגונעתףטמןרשאסהפדץיךכ‏חüצזבםלק‗ÂÅÐÒÚÓÈÎÏØÙÀÑÄÔÃÕÉÊËÞÇÜÖÆÁÍÌ× ";
+                options.User.AllowedUserNameCharacters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._@+/ÿגונעתףטמןרשאסהפדץיךכ‏חüצזבםלק‗ÂÅÐÒÚÓÈÎÏØÙÀÑÄÔÃÕÉÊËÞÇÜÖÆÁÍÌ×& ";
             })
                 .AddEntityFrameworkStores<ApplicationDbContext>()
                 .AddDefaultTokenProviders();

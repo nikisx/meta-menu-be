@@ -51,6 +51,29 @@ namespace meta_menu_be.Services.FoodCategoryService
             return new ServiceResult<bool>(true);
         }
 
+        public ServiceResult<bool> EditFocus(FoodCategoryJsonModel model, string userId)
+        {
+            var category = dbContext.FoodCategories.FirstOrDefault(c => c.Id == model.Id);
+
+            var focusedCategory = dbContext.FoodCategories.FirstOrDefault(c => c.UserId == userId && c.IsOnFocus);
+
+            if (category == null)
+            {
+                return new ServiceResult<bool>("Invalid id");
+            }
+
+            if (focusedCategory != null && focusedCategory.Id != category.Id)
+            {
+                focusedCategory.IsOnFocus = false;
+            }
+
+            category.IsOnFocus = !category.IsOnFocus;
+
+            dbContext.SaveChanges(userId);
+
+            return new ServiceResult<bool>(true);
+        }
+
         public ServiceResult<List<FoodCategoryJsonModel>> GetAll(string userId)
         {
             var res = dbContext.FoodCategories
@@ -72,6 +95,7 @@ namespace meta_menu_be.Services.FoodCategoryService
                         IsHidden = i.IsHidden,
                     }),
                     IsHidden = x.IsHidden,
+                    IsOnFocus = x.IsOnFocus,
                 }).ToList();
 
             return new ServiceResult<List<FoodCategoryJsonModel>>(res);
@@ -80,6 +104,12 @@ namespace meta_menu_be.Services.FoodCategoryService
         public ServiceResult<bool> HideCategory(FoodCategoryJsonModel model, string userId)
         {
             var category = dbContext.FoodCategories.FirstOrDefault(c => c.Id == model.Id);
+
+            if (category == null)
+            {
+                return new ServiceResult<bool>("Invalid id");
+            }
+
             category.IsHidden = model.IsHidden;
 
             dbContext.SaveChanges(userId);

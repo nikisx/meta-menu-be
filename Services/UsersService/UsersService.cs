@@ -85,6 +85,7 @@ namespace meta_menu_be.Services.UsersService
                         Price = string.Format("{0:f2}", i.Price),
                     }).ToList(),
                     IsHidden = x.IsHidden,
+                    IsOnFocus = x.IsOnFocus,
                 }).ToList(),
                 Tables = applicationUser.Tables.Select(x => new TableJsonModel
                 {

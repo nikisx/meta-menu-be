@@ -6,6 +6,7 @@
         public string Name { get; set; }
         public string? UserId { get; set; }
         public bool IsHidden { get; set; }
+        public bool IsOnFocus { get; set; }
         public IEnumerable<FoodItemJsonModel>? Items { get; set; }
     }
 }
