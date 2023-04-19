@@ -26,7 +26,7 @@ namespace meta_menu_be
             // Add services to the container.
 
             // For Entity Framework
-            builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(configuration.GetConnectionString("ConnStr")));
+            builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(configuration.GetConnectionString("ProdStr")));
 
             // For Identity
             builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
@@ -103,7 +103,7 @@ namespace meta_menu_be
             app.UseCors(builder =>
             {
                 builder
-                .WithOrigins("http://localhost:8080", "https://localhost:44349")
+                .WithOrigins("http://localhost:8080", "https://localhost:44349", "https://meta-menu.netlify.app/")
                 .SetIsOriginAllowed(host => true)
                 .AllowAnyMethod()
                 .AllowAnyHeader()

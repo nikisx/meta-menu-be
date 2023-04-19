@@ -1,6 +1,7 @@
 ﻿using meta_menu_be.Common;
 using meta_menu_be.Entities;
 using meta_menu_be.JsonModels;
+using Microsoft.EntityFrameworkCore;
 using QRCoder;
 using System.Drawing;
 using System.Net;
@@ -18,13 +19,16 @@ namespace meta_menu_be.Services.TablesService
 
         public ServiceResult<bool> Create(int tableNumber, string userId)
         {
-            var user = this.dbContext.Users.FirstOrDefault(x => x.Id == userId);
+            var user = this.dbContext.Users.Include(x => x.Tables).FirstOrDefault(x => x.Id == userId);
 
-            for (int i = 0; i < tableNumber; i++)
+            var userTablesCount = user.Tables.Count;
+
+            for (int i = userTablesCount; i < tableNumber + userTablesCount; i++)
             {
                 var newTable = new Table
                 {
                     UserId = userId,
+                    Number = "Маса номер " + i,
                 };
 
                 this.dbContext.Add(newTable);
@@ -108,7 +112,7 @@ namespace meta_menu_be.Services.TablesService
             }
 
 
-            var link = $"http://localhost:8080/menu/{userId}/{table.Id}";
+            var link = $"https://meta-menu.netlify.app/menu/{userId}/{table.Id}";
 
             var qrFileName = $"table-id-{table.Id}.png";
 

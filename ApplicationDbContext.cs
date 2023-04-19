@@ -29,7 +29,7 @@ namespace meta_menu_be
                 {
                     ((BaseEntity)entity.Entity).CreatedById = userId;
                 }
-                ((BaseEntity)entity.Entity).Created = System.DateTime.Now;
+                ((BaseEntity)entity.Entity).Created = System.DateTime.Now.AddHours(3);
 
             }
 
@@ -42,7 +42,7 @@ namespace meta_menu_be
 
             foreach (var entity in entities)
             {
-                ((BaseEntity)entity.Entity).Created = System.DateTime.Now;
+                ((BaseEntity)entity.Entity).Created = System.DateTime.Now.AddHours(3);
             }
 
             return base.SaveChanges();
